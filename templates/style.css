@@ -1,0 +1,24 @@
+*{
+    margin: 0px;
+}
+
+#container, #panel{
+    border: 2px solid black;
+}
+
+#panel{
+    width: 80%;
+    margin: auto;
+    height: 800px;
+}
+
+#input-form{
+    border: 1px solid blue;
+    width: 600px;
+    height: 500px;
+    margin: auto;
+    margin-top: 50px;
+    border-radius: 20px;
+}
+
+
