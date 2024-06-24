@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css"> <!--calling external sytles -->
+    <!--third party bootstrap-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+    <div id="container">
+        <div id="panel">
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <label>Welcome Admin </label>
+              
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active float-end" aria-current="page" href="#">Summary</a>
+                    <a class="nav-link active float-end" aria-current="page" href="#">Logout</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+        <!-- Table here-->
+        <div class="d-flex justify-content-md-center">
+        <table class="table">
+            <thead>
+              <tr class="table-dark">
+                <th scope="col">#</th>
+                <th scope="col">User</th>
+                <th scope="col">List</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Ram</td>
+                <td>3</td>
+                <td><button type="button" class="btn btn-success">View</button>||<button type="button" class="btn btn-danger">Delete</button></td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Joy</td>
+                <td>4</td>
+                <td><button type="button" class="btn btn-success">View</button>||<button type="button" class="btn btn-danger">Delete</button></td>
+              </tr>
+            </tbody>
+          </table>
+          </div>
+        </div>
+    </div>
+</body>
+</html>

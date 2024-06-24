@@ -3,42 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css"> <!--calling external sytles -->
+    <link rel="stylesheet" href="/static/style.css"> <!--calling external sytles -->
     <!--third party bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <title>Login Page</title>
+    <title>User Dashboard</title>
 </head>
 <body>
     <div id="container">
-        <!--nav bard-->
-        <h2>Here nav bard is added</h2>
         <div id="panel">
-            <h2>User Dashboard</h2>
-            <div class="container">
-                <div class="row">
-                    <!--row 1 col1 -->
-                  <div class="col-sm">
-                    <div class="card" style="width: 18rem;">
-                        <div class="card-body">
-                          <h5 class="card-title">Card1</h5>
-                          <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-                          <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                          <a href="#" class="card-link">Card link</a>
-                          <a href="#" class="card-link">Another link</a>
-                        </div>
-                      </div>
-                  </div>
-                  <!--row 1 col2 -->
-                  <div class="col-sm">
-                    One of three columns
-                  </div>
-
-                  <!--row 1 col3 -->
-                  <div class="col-sm">
-                    One of three columns
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <label>Welcome {username} </label>
+              
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                  <li class="nav-item">
+                    <a class="nav-link active float-end" aria-current="page" href="#">Summary</a>
+                    <a class="nav-link active float-end" aria-current="page" href="#">Logouts</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+          <!--Cards for list -->
+          <div class="container">
+            <div class="row">
+              <div class="col">
+                <!--Card1 in col-1 -->
+                <div class="card" style="width: 18rem;">
+                  <div class="card-body">
+                    <h5 class="card-title">To Do <a href="#"><img src="/static/img/icons8-edit-30.png"></a>|<a href="#"><img src="/static/img/icons8-delete-30.png"></a></h5>
+                    <p class="card-text">Tasks just created</p>
+                    Select the card >> 
+                    <select name="card">
+                      <option>None</option>
+                      <option>Card1</option>
+                      <option>Card2</option>
+                      <option>Card3</option>
+                    </select><br>
+                    <a href="#">New</a> <a href="#">Edit</a> <a href="#">Delete</a> 
                   </div>
                 </div>
               </div>
+              <div class="col">
+                <!--Card2 in col-2 -->
+                <div class="card" style="width: 18rem;">
+                 
+                  <div class="card-body">
+                    <h5 class="card-title">In Progress<a href="#"><img src="/static/img/icons8-edit-30.png"></a>|<a href="#"><img src="/static/img/icons8-delete-30.png"></a></h5>
+                    <p class="card-text">Currently doing</p>
+                    Select the card >> 
+                    <select name="card">
+                      <option>None</option>
+                      <option>Card1</option>
+                      <option>Card2</option>
+                      <option>Card3</option>
+                    </select><br>
+                    <a href="#">New</a> <a href="#">Edit</a> <a href="#">Delete</a> 
+                  </div>
+                </div>
+              </div>
+              <div class="col">
+               <!--Card3 in col-3 -->
+               <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                  <h5 class="card-title">Done<a href="#"><img src="/static/img/icons8-edit-30.png"></a>|<a href="#"><img src="/static/img/icons8-delete-30.png"></a></h5>
+                  <p class="card-text">Tasks finished</p>
+                  Select the card >> 
+                  <select name="card">
+                    <option>None</option>
+                    <option>Card1</option>
+                    <option>Card2</option>
+                    <option>Card3</option>
+                  </select><br>
+                  <a href="#">New</a> <a href="#">Edit</a> <a href="#">Delete</a> 
+                  Hello
+                </div>
+              </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-md-center">
+            <button type="button" class="btn btn-success">+New List</button>
+          </div>
         </div>
     </div>
 </body>
