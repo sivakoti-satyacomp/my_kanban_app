@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="/static/style.css"> <!--calling external sytles -->
     <!--third party bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <title>User Dashboard</title>
 </head>
 <body>
@@ -26,14 +28,20 @@
             </div>
           </nav>
           <!--Cards for list -->
+          {%if lists%}
           <div class="container">
             <div class="row">
+              {%for list in lists%}
               <div class="col">
                 <!--Card1 in col-1 -->
                 <div class="card" style="width: 18rem;">
                   <div class="card-body">
-                    <h5 class="card-title">To Do <a href="#"><img src="/static/img/icons8-edit-30.png"></a>|<a href="#"><img src="/static/img/icons8-delete-32.png"></a></h5>
-                    <p class="card-text">Tasks just created</p>
+                    <input type="hidden" name="list_id" value="{{list.id}}">
+                    <h5 class="card-title">{{list.title}} 
+                      <a href="#" type="button" data-bs-toggle="modal" data-bs-target="#editListModal" data-val="{{lists.title}}#{{lists.description}}"><img src="/static/img/icons8-edit-30.png"></a>|
+                      <a href="#" type="button" data-bs-toggle="modal" data-bs-target="#deleteListModal" data-val="{{lists.title}}#{{lists.description}}"><img src="/static/img/icons8-delete-32.png">
+                    </a></h5>
+                    <p class="card-text">{{list.description}}</p>
                     Select the card >> 
                     <select name="card">
                       <option>None</option>
@@ -45,48 +53,125 @@
                   </div>
                 </div>
               </div>
-              <div class="col">
-                <!--Card2 in col-2 -->
-                <div class="card" style="width: 18rem;">
-                 
-                  <div class="card-body">
-                    <h5 class="card-title">In Progress<a href="#"><img src="/static/img/icons8-edit-30.png"></a>|<a href="#"><img src="/static/img/icons8-delete-32.png"></a></h5>
-                    <select name="card">
-                      <option>None</option>
-                      <option>Card1</option>.png"></a></h5>
-                    <p class="card-text">Currently doing</p>
-                    Select the card >> 
-                      <option>Card2</option>
-                      <option>Card3</option>
-                    </select><br>
-                    <a href="#">New</a> <a href="#">Edit</a> <a href="#">Delete</a> 
-                  </div>
-                </div>
-              </div>
-              <div class="col">
-               <!--Card3 in col-3 -->
-               <div class="card" style="width: 18rem;">
-                <div class="card-body">
-                  <h5 class="card-title">Done<a href="#"><img src="/static/img/icons8-edit-30.png"></a>|<a href="#"><img src="/static/img/icons8-delete-32.png"></a></h5>
-                  <p class="card-text">Tasks finished</p>
-                  Select the card >> 
-                  <select name="card">
-                    <option>None</option>
-                    <option>Card1</option>
-                    <option>Card2</option>
-                    <option>Card3</option>
-                  </select><br>
-                  <a href="#">New</a> <a href="#">Edit</a> <a href="#">Delete</a>
-                </div>
-              </div>
+              {%endfor%}
+            {%else%}
+              <div><h3>No lists are available to you!</h3></div>
+            {%endif%}
+              <div class="d-flex justify-content-md-center">
+                <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addListModal">+New List</button>
               </div>
             </div>
+          
           </div>
-          <br>
-          <div class="d-flex justify-content-md-center">
-            <button type="button" class="btn btn-success">+New List</button>
-          </div>
+          
         </div>
     </div>
+
+<!--Modal dialog boxes for LISTS-->
+
+<!-- Add list Modal -->
+<form action="/list/add/{{id}}" method="POST">
+<div class="modal fade" id="addListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">New List</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      
+      <div class="modal-body">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" name="title" id="title">
+        <label for="description" class="form-label">Description</label>
+        <textarea class="form-control" name="description" id="description" rows="4"></textarea>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+    
+    </div>
+  </div>
+</div>
+</form>
+
+
+
+<!-- Edit list Modal -->
+<form action="/list/edit/{{id}}/{{list_id}}" method="POST">
+  <div class="modal fade" id="editListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit List</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" name="title" id="title" value="{{lists.title}}">
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" name="description" id="description" rows="4">{{lists.description}}</textarea>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+  </form>
+  <script>
+    $("#editListModal").on("show.bs.model", function(event){
+      alert("Hi");
+      console.log('Hi');
+      var st=$(event.relatedTarget).data('val');
+      var values=st.split('#');
+      $(this).find('#title').val(values[0]);
+      $(this).find('#description').val(values[1]);
+    });
+  </script>
+
+<!-- Delete list Modal -->
+<form action="/list/delete/{{id}}" method="POST">
+  <div class="modal fade" id="deleteListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete List?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" name="title" id="title" readonly>
+          <label for="description" class="form-label">Description</label>
+          <textarea class="form-control" name="description" id="description" rows="4" readonly></textarea>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+  </form>
+<script>
+  $("#deleteListModal").on("show.bs.model", function(event){
+      var st=$(event.relatedTarget).data('val');
+      var values=st.split('#');
+      $(this).find('#title').val(values[0]);
+      $(this).find('#description').val(values[1]);
+    });
+</script>
+
+<!--End of Modal dialogs for LISTS-->
+
+  
 </body>
 </html>

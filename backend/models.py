@@ -10,6 +10,7 @@ class User_Info(db.Model):
     user_name=db.Column(db.String,unique=True,nullable=False)
     pwd=db.Column(db.String,nullable=False)
     role=db.Column(db.Integer,nullable=False,default=1)
+    lists=db.relationship("Lists",backref="user_info")
 
 
 class Lists(db.Model):
@@ -18,6 +19,7 @@ class Lists(db.Model):
     title=db.Column(db.String,nullable=False)
     description=db.Column(db.String,nullable=False)
     user_id=db.Column(db.Integer,db.ForeignKey("user_info.id"),nullable=False)
+    cards=db.relationship("Cards",backref="lists")
     
 
 class Cards(db.Model):

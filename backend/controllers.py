@@ -33,14 +33,61 @@ def user_login():
         pwd=request.form.get("pwd")
         usr=User_Info.query.filter_by(user_name=uname, pwd=pwd).first() #Get existig user matched
         if usr and usr.role==0:
-            #Add a code read existing user summary from user list
-            return render_template("admin_dashboard.html",name=usr.user_name)
+            user_summary=fetch_users() #Calling
+            return render_template("admin_dashboard.html",name=usr.user_name,users=user_summary)
         elif usr and usr.role==1:
-            return render_template("user_dashboard.html",name=usr.user_name)
+            user_info=fetch_user_info(usr.id) #one user object
+            return render_template("user_dashboard.html",id=user_info.id,name=usr.user_name,lists=user_info.lists)
         else:
             return render_template("login.html",msg="Invalid credentials!!")
     
     return render_template("login.html",msg="")
 
+
+#UDF for reading all general users
+def fetch_users():
+    users=User_Info.query.filter_by(role=1).all()
+    user_list={}
+    for user in users:
+        if user.id not in user_list.keys():
+            user_list[user.id]=[user.user_name,len(user.lists)]
+    return user_list
+
+def fetch_user_info(id):
+    user_info=User_Info.query.filter_by(id=id).first()
+    return user_info
+
+
 #more routes here
+@app.route("/list/add/<int:user_id>",methods=["GET","POST"])
+def new_list(user_id):
+    if request.method=="POST":
+        title=request.form.get("title")
+        description=request.form.get("description")
+        list_obj=Lists(title=title,description=description,user_id=user_id)
+        db.session.add(list_obj)
+        db.session.commit()
+        user_info=fetch_user_info(user_id)
+        return render_template("user_dashboard.html",id=user_info.id,name=user_info.user_name,lists=user_info.lists)
+
+
+@app.route("/list/edit/<int:user_id>/<int:list_id>",methods=["GET","POST"])
+def edit_list(user_id,list_id):
+     if request.method=="POST":
+        new_title=request.form.get("title")
+        new_description=request.form.get("description")
+        list_obj=Lists.query.filter_by(id=list_id).first()
+        list_obj.title=new_title
+        list_obj.description=new_description
+        db.session.commit()
+        user_info=fetch_user_info(user_id)
+        return render_template("user_dashboard.html",id=user_info.id,name=user_info.user_name,lists=user_info.lists)
+   
+
+
+@app.route("/list/delete/<int:user_id>",methods=["GET","POST"])
+def delete_list(user_id):
+    pass
+
+
 #lot of routes

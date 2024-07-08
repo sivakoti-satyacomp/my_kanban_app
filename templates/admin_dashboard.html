@@ -26,6 +26,7 @@
             </div>
           </nav>
         <!-- Table here-->
+        {%if users%}
         <div class="d-flex justify-content-md-center">
         <table class="table">
             <thead>
@@ -37,21 +38,20 @@
               </tr>
             </thead>
             <tbody>
+            {%for key,value in users.items()%}
               <tr>
-                <th scope="row">1</th>
-                <td>Ram</td>
-                <td>3</td>
+                <th scope="row">{{key}}</th>
+                <td>{{value[0]}}</td>
+                <td>{{value[1]}}</td>
                 <td><button type="button" class="btn btn-success">View</button>||<button type="button" class="btn btn-danger">Delete</button></td>
               </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>Joy</td>
-                <td>4</td>
-                <td><button type="button" class="btn btn-success">View</button>||<button type="button" class="btn btn-danger">Delete</button></td>
-              </tr>
+            {%endfor%}
             </tbody>
           </table>
           </div>
+        {%else%}
+        <h3>No users available</h3>
+        {%endif%}
         </div>
     </div>
 </body>
