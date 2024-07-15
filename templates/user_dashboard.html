@@ -7,7 +7,7 @@
     <!--third party bootstrap-->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <title>User Dashboard</title>
 </head>
 <body>
@@ -20,7 +20,7 @@
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                   <li class="nav-item">
-                    <a class="nav-link active float-end" aria-current="page" href="#">Summary</a>
+                    <a href="#" class="btn btn-link" type="button" data-bs-toggle="offcanvas" data-bs-target="#summaryCanvas" aria-controls="offcanvasRight">Summary</a>
                     <a class="nav-link active float-end" aria-current="page" href="#">Logouts</a>
                   </li>
                 </ul>
@@ -38,18 +38,36 @@
                   <div class="card-body">
                     <input type="hidden" name="list_id" value="{{list.id}}">
                     <h5 class="card-title">{{list.title}} 
-                      <a href="#" type="button" data-bs-toggle="modal" data-bs-target="#editListModal" data-val="{{lists.title}}#{{lists.description}}"><img src="/static/img/icons8-edit-30.png"></a>|
-                      <a href="#" type="button" data-bs-toggle="modal" data-bs-target="#deleteListModal" data-val="{{lists.title}}#{{lists.description}}"><img src="/static/img/icons8-delete-32.png">
+                      <a href="#" type="button" class="btn" id="edit_button" data-bs-toggle="modal" data-bs-target="#editListModal" data-val="{{list.title}}#{{list.description}}"><img src="/static/img/icons8-edit-30.png"></a>|
+                      <a href="#" type="button" class="btn" id="delete_button" data-bs-toggle="modal" data-bs-target="#deleteListModal" data-val="{{list.title}}#{{list.description}}"><img src="/static/img/icons8-delete-32.png">
                     </a></h5>
                     <p class="card-text">{{list.description}}</p>
-                    Select the card >> 
-                    <select name="card">
-                      <option>None</option>
-                      <option>Card1</option>
-                      <option>Card2</option>
-                      <option>Card3</option>
-                    </select><br>
-                    <a href="#">New</a> <a href="#">Edit</a> <a href="#">Delete</a> 
+                    {%if list.cards%}
+                    <table class="table">
+                      <thead>
+                        <tr>
+                          <th scope="col">ID</th>
+                          <th scope="col">Title</th>
+                          <th scope="col">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {%for card in list.cards%}
+                        <tr>
+                          <td>{{card.id}}</td>
+                          <td>{{card.title}}</td>
+                          <td>
+                            <a href="#" type="button" id="btn_edit_button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#editCardModal" data-val="{{card.id}}#{{card.title}}#{{card.content}}#{{card.dead_line}}#{{card.status}}#{{card.list_id}}">Edit</a>
+                            <a href="#" type="button" id="btn_delete_button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#deleteCardModal" data-val="{{card.id}}#{{card.title}}#{{card.content}}#{{card.dead_line}}#{{card.status}}#{{card.list_id}}">Delete</a>
+                          </td>
+                        </tr>
+                      {%endfor%}
+                      </tbody>
+                    </table>
+                    {%else%}
+                    <p>No card in the list</p>
+                    {%endif%}
+                    <a href="#" type="button" id="btn_add_button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#addCardModal" data-val="{{list.id}}">New</a> 
                   </div>
                 </div>
               </div>
@@ -99,25 +117,26 @@
 
 
 <!-- Edit list Modal -->
-<form action="/list/edit/{{id}}/{{list_id}}" method="POST">
-  <div class="modal fade" id="editListModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<form action="/list/edit/{{id}}" method="POST">
+  <div class="modal fade" id="editListModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
+
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Edit List</h5>
+          <h5 class="modal-title">Edit List</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         
         <div class="modal-body">
           <label for="title" class="form-label">Title</label>
-          <input type="text" class="form-control" name="title" id="title" value="{{lists.title}}">
+          <input type="text" class="form-control" name="title" id="title">
           <label for="description" class="form-label">Description</label>
-          <textarea class="form-control" name="description" id="description" rows="4">{{lists.description}}</textarea>
+          <textarea class="form-control" name="description" id="description" rows="4"></textarea>
         </div>
   
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
         </div>
       
       </div>
@@ -125,9 +144,7 @@
   </div>
   </form>
   <script>
-    $("#editListModal").on("show.bs.model", function(event){
-      alert("Hi");
-      console.log('Hi');
+    $("#editListModal").on("show.bs.modal", function(event){
       var st=$(event.relatedTarget).data('val');
       var values=st.split('#');
       $(this).find('#title').val(values[0]);
@@ -162,16 +179,201 @@
   </div>
   </form>
 <script>
-  $("#deleteListModal").on("show.bs.model", function(event){
+  $("#deleteListModal").on("show.bs.modal", function(event){
       var st=$(event.relatedTarget).data('val');
       var values=st.split('#');
       $(this).find('#title').val(values[0]);
       $(this).find('#description').val(values[1]);
     });
 </script>
-
 <!--End of Modal dialogs for LISTS-->
 
+
+<!-- Start Modal dialogs for CARDS/TASKS-->
+<!--Modal for Add Card-->
+<form action="/card/add/{{id}}" method="POST">
+  <div class="modal fade" id="addCardModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">New Card</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <input type="text" class="form-control" name="list_id" id="list_id" hidden>
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" name="title" id="title">
+          <label for="description" class="form-label">Content</label>
+          <textarea class="form-control" name="content" id="content" rows="4"></textarea>
+          <label for="dead_line" class="form-label">Deadline</label>
+          <input type="date" class="form-control" name="dead_line" id="dead_line">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="completedStatus" name="completedStatus">
+            <label class="form-check-label" for="completedStatus">Mark as complete?</label>
+          </div>
+        </div>
   
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+  </form>
+  <script>
+    $("#addCardModal").on("show.bs.modal", function(event){
+        var st=$(event.relatedTarget).data('val');
+        $(this).find('#list_id').val(st);
+      });
+  </script>
+
+<!--End of Add card modal-->
+
+<!--Modal for Edit Card-->
+<form action="/card/edit/{{id}}" method="POST">
+  <div class="modal fade" id="editCardModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Card</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <input type="text" class="form-control" name="card_id" id="card_id" hidden>
+          
+          <label>List</label> <!--Move the card to other list-->
+          <select id="list_modified" name="list_modified">
+            {%for list in lists%}
+            <option value="{{list.id}}">{{list.title}}</option>
+            {%endfor%}
+          </select>
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" name="title" id="title">
+          <label for="description" class="form-label">Content</label>
+          <textarea class="form-control" name="content" id="content" rows="4"></textarea>
+          <label for="dead_line" class="form-label">Deadline</label>
+          <input type="date" class="form-control" name="dead_line" id="dead_line">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="completedStatus" name="completedStatus">
+            <label class="form-check-label" for="completedStatus">Mark as complete?</label>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+  </form>
+  <script>
+    $("#editCardModal").on("show.bs.modal", function(event){
+      var st=$(event.relatedTarget).data('val');
+      var values=st.split('#'); //0 to 5
+      $(this).find('#card_id').val(values[0]);
+      $(this).find('#title').val(values[1]);
+      $(this).find('#content').val(values[2]);
+      $(this).find('#dead_line').val(values[3]);
+      var chk_val=(values[4]==1); //true or false is returned
+      $(this).find('#completedStatus').prop('checked',chk_val);
+      $(this).find('#list_modified').val(values[5]);
+      });
+  </script>
+<!--End of edit card modal-->
+
+<!--Delete Card modal start-->
+<form action="/card/delete/{{id}}" method="POST">
+  <div class="modal fade" id="deleteCardModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Card</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        
+        <div class="modal-body">
+          <input type="text" class="form-control" name="card_id" id="card_id" hidden>
+          
+          <label>List</label> 
+          <input type="text" class="form-control" name="list_id" id="list_id" readonly>
+          <label for="title" class="form-label">Title</label>
+          <input type="text" class="form-control" name="title" id="title" readonly>
+          <label for="description" class="form-label">Content</label>
+          <textarea class="form-control" name="content" id="content" rows="4" readonly></textarea>
+          <label for="dead_line" class="form-label">Deadline</label>
+          <input type="date" class="form-control" name="dead_line" id="dead_line" readonly>
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" id="completedStatus" name="completedStatus" readonly>
+            <label class="form-check-label" for="completedStatus">Mark as complete?</label>
+          </div>
+        </div>
+  
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger">Delete</button>
+        </div>
+      
+      </div>
+    </div>
+  </div>
+  </form>
+  <script>
+    $("#deleteCardModal").on("show.bs.modal", function(event){
+      var st=$(event.relatedTarget).data('val');
+      var values=st.split('#'); //0 to 5
+      $(this).find('#card_id').val(values[0]);
+      $(this).find('#title').val(values[1]);
+      $(this).find('#content').val(values[2]);
+      $(this).find('#dead_line').val(values[3]);
+      var chk_val=(values[4]==1); //true or false is returned
+      $(this).find('#completedStatus').prop('checked',chk_val);
+      $(this).find('#list_modified').val(values[5]);
+      });
+  </script>
+<!--End of delete card modal-->
+
+
+
+
+<!-- End of Modal dialogs for CARDS/TASKS-->
+
+
+
+<!-- Summary using Graphs -->
+
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="summaryCanvas" aria-labelledby="offcanvasRightLabel">
+  <div class="offcanvas-header">
+    <h5 id="offcanvasRightLabel">
+      Summary of Lists
+    </h5>
+    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  {%for list in lists%}
+  <div class="offcanvas-body">
+      <h3>{{list.title}}</h3>
+      {%if list.cards%}
+        {%set count=namespace(c1=0,c2=0)%}
+        {%for card in list.cards%}
+          {%if card.status==1%}
+            {%set count.c1 = count.c1 + 1%}
+          {%else%}
+            {%set count.c2 = count.c2 + 1%}
+          {%endif%}
+          {%endfor%}
+        <div> Completed: {{count.c1}}, Incomplete : {{count.c2}}</div>
+      {%else%}
+        <div>No task in the list</div>
+      {%endif%}
+  </div>
+  {%endfor%}
+</div>
+
 </body>
 </html>

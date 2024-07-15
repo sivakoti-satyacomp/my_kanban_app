@@ -27,9 +27,9 @@ class Cards(db.Model):
     id=db.Column(db.Integer,primary_key=True)
     title=db.Column(db.String,nullable=False)
     content=db.Column(db.String,nullable=False)
-    created_dt=db.Column(db.Date,nullable=False)
-    last_updated_dt=db.Column(db.Date,nullable=False)
-    dead_line=db.Column(db.Date,nullable=False)
+    created_dt=db.Column(db.String,nullable=False)
+    last_updated_dt=db.Column(db.String,nullable=False)
+    dead_line=db.Column(db.String,nullable=False)
     status=db.Column(db.Integer,nullable=False,default=0)
     list_id=db.Column(db.Integer,db.ForeignKey("lists.id"),nullable=False)
 
