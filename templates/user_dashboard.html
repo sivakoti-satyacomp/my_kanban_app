@@ -326,7 +326,7 @@
   <script>
     $("#deleteCardModal").on("show.bs.modal", function(event){
       var st=$(event.relatedTarget).data('val');
-      var values=st.split('#'); //0 to 5
+      var values=st.split('#'); //0 to 5 [....]
       $(this).find('#card_id').val(values[0]);
       $(this).find('#title').val(values[1]);
       $(this).find('#content').val(values[2]);

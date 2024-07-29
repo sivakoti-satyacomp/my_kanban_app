@@ -149,3 +149,15 @@ def delete_card(user_id):
         db.session.commit()
         user_info=fetch_user_info(user_id)
         return render_template("user_dashboard.html",id=user_info.id,name=user_info.user_name,lists=user_info.lists)
+
+
+
+@app.route("/search",methods=["GET","POST"])
+def search():
+    q=request.form.get("txt_search") #title of list, description of list, title of the card, content of the card
+    search_result=[]
+    if q:
+        search_result=Lists.query.filter_by(Lists.title.icontains(q) | Lists.description.icontains(q)).all()
+    
+    return render_template("user_dashboard.html",.....,src_results=search_result)
+

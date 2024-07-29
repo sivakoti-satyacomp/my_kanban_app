@@ -1,6 +1,6 @@
 from flask import Flask
 from backend.models import *
-
+from backend.api_controllers import api
 app=None #initially none
 
 def init_app():
@@ -9,6 +9,7 @@ def init_app():
     kanban_app.config["SQLALCHEMY_DATABASE_URI"]="sqlite:///kanban.sqlite3"
     kanban_app.app_context().push() #Direct access app by other modules(db, authentication)
     db.init_app(kanban_app) #object.method(<parameter>)
+    api.init_app(kanban_app)
     print("Kanban application started....")
     return kanban_app
 
